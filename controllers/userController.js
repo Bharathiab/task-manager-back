@@ -5,7 +5,9 @@ const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 
-//Register new user
+// @desc Register new user
+// @route POST /api/users/register
+// @access Public
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -15,12 +17,7 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Do NOT hash here; User model will handle it
-    const user = await User.create({
-      name,
-      email,
-      password,
-    });
+    const user = await User.create({ name, email, password });
 
     if (user) {
       res.status(201).json({
@@ -38,13 +35,14 @@ const registerUser = async (req, res) => {
 };
 
 // @desc Login user
+// @route POST /api/users/login
+// @access Public
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
 
-    // Use schema method matchPassword
     if (user && (await user.matchPassword(password))) {
       res.json({
         _id: user.id,
@@ -60,9 +58,32 @@ const loginUser = async (req, res) => {
   }
 };
 
-// @desc Get user profile
+// @desc Get logged-in user profile
+// @route GET /api/users/profile
+// @access Private
 const getUserProfile = async (req, res) => {
   res.json(req.user);
 };
 
-module.exports = { registerUser, loginUser, getUserProfile };
+// @desc Get user by ID
+// @route GET /api/users/:id
+// @access Private
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  getUserProfile,
+  getUserById,
+};
