@@ -1,7 +1,5 @@
-// controllers/taskController.js
 const Task = require("../models/Task");
 
-// Get all tasks for logged in user
 const getTasks = async (req, res) => {
   try {
     const { status, search } = req.query;
@@ -24,7 +22,6 @@ const getTasks = async (req, res) => {
   }
 };
 
-// Create new task
 const createTask = async (req, res) => {
   try {
     const { title, description } = req.body;
@@ -43,7 +40,6 @@ const createTask = async (req, res) => {
   }
 };
 
-// Update task
 const updateTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
@@ -65,7 +61,6 @@ const updateTask = async (req, res) => {
   }
 };
 
-// Delete task
 const deleteTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);

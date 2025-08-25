@@ -1,13 +1,10 @@
-// controllers/userController.js
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 
 const generateToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 
-// @desc Register new user
-// @route POST /api/users/register
-// @access Public
+
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -34,9 +31,7 @@ const registerUser = async (req, res) => {
   }
 };
 
-// @desc Login user
-// @route POST /api/users/login
-// @access Public
+
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -58,16 +53,12 @@ const loginUser = async (req, res) => {
   }
 };
 
-// @desc Get logged-in user profile
-// @route GET /api/users/profile
-// @access Private
+
 const getUserProfile = async (req, res) => {
   res.json(req.user);
 };
 
-// @desc Get user by ID
-// @route GET /api/users/:id
-// @access Private
+
 const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select("-password");
